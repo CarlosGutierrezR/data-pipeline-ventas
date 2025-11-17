@@ -1,0 +1,18 @@
+# Carpetas generadas por Airflow
+airflow/logs/
+airflow/plugins/
+airflow/__pycache__/
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+
+# Archivos temporales del sistema
+.DS_Store
+
+# Volúmenes y datos generados por Docker
+docker_postgres_airflow/
+docker_postgres_data/
+
+# Reportes PNG generados (si quieres también ignorarlos)
+# reports/*.png
