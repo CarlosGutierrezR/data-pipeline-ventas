@@ -1,176 +1,180 @@
-📌 Proyecto: Data Pipeline de Ventas
+ 📌 Proyecto: Data Pipeline de Ventas
 
-Este proyecto implementa un pipeline completo y automatizado de procesamiento de datos de ventas, utilizando una arquitectura moderna basada en:
+Este proyecto implementa un pipeline completo y automatizado para procesar datos de ventas utilizando una arquitectura moderna:
 
-🐘 PostgreSQL (almacenamiento)
+- 🐘 **PostgreSQL** (almacenamiento)
+- 🐍 **Python** (ETL, análisis y dashboards)
+- 🐳 **Docker & Docker Compose**
+- 🌬 **Apache Airflow 2.6.3** (orquestación)
+- 📊 **Plotly / Matplotlib** (visualización)
 
-🐍 Python (ETL, análisis, reportes)
+El objetivo es simular un flujo real de datos corporativos, procesarlos y generar reportes diarios, todo automatizado con Airflow.
 
-🐳 Docker & Docker Compose (contenedorización)
+---
 
-🌬️ Apache Airflow 2.6.3 (orquestación)
+## 🏗 Arquitectura del Pipeline
 
-📊 Plotly / Matplotlib (visualización de datos)
+┌──────────────────────────────┐
+│ Datos Iniciales │ ← clientes.csv / productos.csv
+└───────────────┬──────────────┘
+↓
+Generación de Órdenes (Python)
+↓
+ETL hacia PostgreSQL (Python)
+↓
+Análisis y KPI de Ventas (Python)
+↓
+Dashboards Automáticos → PNG (Plotly/Matplotlib)
+↓
+Orquestación con Airflow (pipeline_ventas)
 
-El objetivo principal es simular un flujo real de datos corporativos, procesarlos y generar reportes diarios, totalmente automatizados por Airflow.
+yaml
+Copiar código
 
-🧱 Arquitectura del Pipeline
-            ┌────────────────────────┐
-            │     Datos Iniciales     │
-            │ (clientes / productos)  │
-            └────────────┬────────────┘
-                         ↓
-               ┌─────────────────┐
-               │ Generar Órdenes │
-               └───────┬─────────┘
-                       ↓
-              ┌──────────────────┐
-              │ ETL a PostgreSQL │
-              └───────┬──────────┘
-                      ↓
-       ┌──────────────────────────────┐
-       │ Análisis y KPI de Ventas     │
-       └───────┬──────────────────────┘
-               ↓
-     ┌───────────────────────────────┐
-     │ Dashboards (PNG automáticos)  │
-     └───────────────────────────────┘
+---
 
+## 📂 Estructura del Proyecto
 
-Todo el flujo está orquestado por Airflow en un DAG llamado pipeline_ventas.
-
-📂 Estructura del Proyecto
 data-pipeline-ventas/
 │
 ├── airflow/
-│   └── dags/
-│       └── pipeline_ventas.py
+│ └── pipeline_ventas.py
+│
+├── dags/ # Carpeta usada por Airflow
 │
 ├── data/
-│   ├── clientes.csv
-│   ├── productos.csv
-│   └── ordenes.csv
+│ ├── clientes.csv
+│ ├── productos.csv
+│ └── ordenes.csv
 │
 ├── docker/
-│   ├── docker-compose.yml
-│   ├── docker-compose-airflow.yml
-│   └── README_docker.md
+│ ├── docker-compose.yml
+│ └── docker-compose-airflow.yml
 │
 ├── reports/
-│   ├── top_clientes.png
-│   ├── top_productos.png
-│   └── ventas_por_dia.png
+│ ├── top_clientes.png
+│ ├── top_productos.png
+│ └── ventas_por_dia.png
 │
 ├── scripts/
-│   ├── analisis_ventas.py
-│   ├── conexion_postgres.py
-│   ├── dashboard_ventas.py
-│   ├── etl_productos.py
-│   ├── generar_ordenes.py
-│   └── insertar_clientes.py
+│ ├── conexion_postgres.py
+│ ├── insertar_clientes.py
+│ ├── etl_productos.py
+│ ├── generar_ordenes.py
+│ ├── analisis_ventas.py
+│ └── dashboard_ventas.py
 │
-├── README.md
-└── requirements.txt
+├── requirements.txt
+└── README.md
 
-⚙️ Tecnologías
-Componente	Descripción
-Airflow 2.6.3	Orquestación del pipeline
-PostgreSQL 13	Base de datos
-Python 3.10+	Scripts ETL, análisis, dashboards
-Docker Compose	Contenedorización completa
-Plotly / Matplotlib	Dashboards automáticos
-🚀 Cómo ejecutar el proyecto
-1️⃣ Clonar el repositorio
+yaml
+Copiar código
+
+---
+
+## 🚀 Cómo ejecutar el proyecto
+
+### 1️⃣ Clonar el repositorio
+
+```bash
 git clone https://github.com/CarlosGutierrezR/data-pipeline-ventas.git
 cd data-pipeline-ventas
+🐘 2️⃣ Levantar PostgreSQL + Adminer
+Entrar a la carpeta docker:
 
-2️⃣ Levantar los servicios con Docker
-
-Entrar en la carpeta docker:
-
+bash
+Copiar código
 cd docker
+docker compose up -d
+Adminer estará disponible en:
 
+👉 http://localhost:8080
 
-Levantar Airflow, Redis y PostgreSQL:
+Credenciales
 
+Campo	Valor
+Servidor	postgres
+Usuario	admin
+Contraseña	admin
+Base de datos	ventasdb
+
+🌬 3️⃣ Levantar Airflow
+Desde la carpeta docker/:
+
+bash
+Copiar código
 docker compose -f docker-compose-airflow.yml up -d
-
-
 Airflow estará disponible en:
 
 👉 http://localhost:8081
 
-3️⃣ Credenciales de acceso a Airflow
+Credenciales Airflow
+
 Usuario	Contraseña
 airflow	airflow
-4️⃣ Ejecutar el pipeline
 
-En Airflow:
+▶️ 4️⃣ Ejecutar el Pipeline
+En la interfaz web de Airflow:
 
-➡️ Busca el DAG: pipeline_ventas
-➡️ Actívalo
-➡️ Haz clic en Trigger DAG
+Buscar el DAG: pipeline_ventas
 
-Esto ejecutará automáticamente todos los scripts del pipeline:
+Activarlo 🔵
+
+Clic en Trigger DAG
+
+Esto ejecutará automáticamente:
 
 ✔ Inserción de clientes
 ✔ Inserción de productos
 ✔ Generación de órdenes
 ✔ ETL hacia PostgreSQL
-✔ Análisis de ventas
-✔ Dashboards automáticos
+✔ Análisis de métricas de ventas
+✔ Dashboards automáticos en PNG
 
-📊 Reportes generados
-
+📊 5️⃣ Reportes generados
 Los archivos se guardan en:
 
+bash
+Copiar código
 /reports/
-    top_clientes.png
-    top_productos.png
-    ventas_por_dia.png
+│── top_clientes.png
+│── top_productos.png
+└── ventas_por_dia.png
+Análisis realizados:
+⭐ Top 5 clientes por número de compras
 
+🛒 Productos más vendidos
 
-Ejemplo de análisis realizado:
+📅 Ventas totales por día
 
-Top 5 clientes por número de órdenes
-
-Productos más vendidos
-
-Ventas totales por día
-
-📜 Descripción de Scripts
+🧠 Descripción de Scripts
 Script	Función
-conexion_postgres.py	Conexion centralizada a PostgreSQL
+conexion_postgres.py	Conexión centralizada a PostgreSQL
 insertar_clientes.py	Poblar tabla de clientes
 etl_productos.py	Poblar tabla de productos
-generar_ordenes.py	Crear órdenes aleatorias y guardarlas
-analisis_ventas.py	Calcular métricas y KPIs
-dashboard_ventas.py	Generar gráficos PNG
-pipeline_ventas.py	Orquestación en Airflow
-📦 Requerimientos
+generar_ordenes.py	Crear órdenes aleatorias
+analisis_ventas.py	Cálculo de KPIs y métricas
+dashboard_ventas.py	Generación de gráficos PNG
+pipeline_ventas.py	Orquestación completa del pipeline en Airflow
 
-Archivo requirements.txt:
+⚙️ Tecnologías Utilizadas
+Apache Airflow 2.6.3
 
-pandas
-psycopg2-binary
-matplotlib
-plotly
-kaleido
-apache-airflow==2.6.3
+PostgreSQL 13
 
-🛠️ Mejoras futuras
+Docker & Docker Compose
 
-✔ Agregar notificaciones por correo
-✔ Contenerizar scripts en Docker
-✔ Crear API para exponer KPIs
-✔ Añadir tests unitarios
-✔ Integrar CI/CD con GitHub Actions
+Python 3.10
 
+pandas / SQLAlchemy
+
+Plotly / Matplotlib
+
+Redis
+
+📦 Requerimientos (solo si ejecutas Python manualmente)
+bash
+Copiar código
+pip install -r requirements.txt
 👨‍💻 Autor
-
-Carlos Gutierrez
-Ingeniero de Sistemas | Ciberseguridad | Data Engineering
-
-📧 chgut31@gmail.com
-
-🔗 GitHub: https://github.com/CarlosGutierrezR
+Proyecto desarrollado por Carlos Gutierrez R.
